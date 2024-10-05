@@ -202,9 +202,11 @@ void RouterSwitch::processPackets(int time) {
                 cnt++;
             }
             
-            inputPortCorrespondingToOutputPort[outputPort]=candidate;
-            outputPortCorrespondingToInputPort[candidate]=outputPort;
-            pendingInputPorts[outputPort].pop(); 
+            if(outputPortCorrespondingToInputPort[candidate]==-1){
+                inputPortCorrespondingToOutputPort[outputPort]=candidate;
+                outputPortCorrespondingToInputPort[candidate]=outputPort;
+                pendingInputPorts[outputPort].pop();
+            }
         }
     }
     for(int outputPort=0; outputPort<NUM_PORTS; outputPort++)

@@ -1,0 +1,95 @@
+# Scheduling Algorithms Router Simulation
+
+This repository contains implementations of various **scheduling algorithms** for simulating packet routing in a network router. The goal of these simulations is to model how routers handle traffic and schedule packets under different algorithms, which can influence the overall performance of the network in terms of throughput, packet drop rates, and fairness.
+
+## Overview of the Code
+
+The repository contains four main C++ files, each implementing a different scheduling algorithm:
+
+1. **iSLIP Algorithm** (`islip.cpp`)
+2. **Priority Queue VOQ (Virtual Output Queuing)** (`priority_queue_voq.cpp`)
+3. **Round Robin VOQ** (`rr_voq.cpp`)
+4. **Weighted Fair Queuing VOQ** (`wfq_voq.cpp`)
+
+### Common Concepts Across the Code
+
+Each of these programs simulates packet switching in a network switch or router, with a **number of input ports and output ports**. The router is modeled to handle incoming packets, place them in queues, and then schedule their transmission to the appropriate output ports based on the scheduling algorithm in use.
+
+- **NUM_PORTS**: Defines the number of input and output ports in the router. In this simulation, it is typically set to 8.
+- **BUFFER_SIZE**: The maximum size of the buffer at each port. If the buffer is full, incoming packets are dropped.
+- **PACKET**: A structure representing a network packet, which includes attributes like priority, arrival time, processing time, size, and the output port it is destined for.
+- **Traffic Patterns**: Each program can simulate different traffic patterns such as uniform traffic, non-uniform traffic, and bursty traffic. These patterns influence how packets arrive at the input ports.
+
+---
+
+## Algorithms Implemented
+
+### 1. iSLIP Algorithm (`islip.cpp`)
+
+The **iSLIP** algorithm is a modified round-robin scheduling algorithm designed to efficiently handle input-output contention in routers. It is used to grant requests from input ports to output ports in a cyclic, round-robin manner, with some modifications to handle fairness and reduce conflicts.
+
+#### Key Steps in iSLIP:
+- **Request Phase**: Each input port sends a request to the output port for which it has a packet.
+- **Grant Phase**: Each output port selects one of the requesting input ports, starting with the last grant pointer and cycling through the requests.
+- **Accept Phase**: Each input port accepts the first grant it receives, and the grant and accept pointers are updated to ensure fairness in future iterations.
+
+The program simulates this scheduling process and outputs statistics such as packet processing time, throughput, and packet drop rate.
+
+### 2. Priority Queue VOQ (`priority_queue_voq.cpp`)
+
+This algorithm uses **Virtual Output Queues (VOQ)** with **priority-based scheduling**. Each input port maintains multiple queues, one for each output port, and the queues are sorted by packet priority. Higher priority packets are scheduled for transmission first.
+
+#### Key Features:
+- **Priority Queuing**: Packets are enqueued based on their priority (lower number indicates higher priority).
+- **Scheduling**: Packets with the highest priority are transmitted first, ensuring that critical traffic gets processed faster.
+
+The program models packet arrivals and processes them based on priority, simulating the effects of priority-based scheduling.
+
+### 3. Round Robin VOQ (`rr_voq.cpp`)
+
+The **Round Robin VOQ** algorithm is a simple round-robin scheduling approach combined with VOQs. Each input port maintains a queue for each output port, and packets are transmitted in a cyclic manner, regardless of their priority.
+
+#### Key Steps:
+- **Cyclic Scheduling**: The router cycles through the queues, selecting packets from each queue in turn to ensure fairness.
+- **Multiple Priorities**: Although the scheduling is round-robin, packets still maintain their priorities within the queues.
+
+This algorithm ensures that all input ports get a fair share of the transmission bandwidth, without giving any port or queue undue preference.
+
+### 4. Weighted Fair Queuing VOQ (`wfq_voq.cpp`)
+
+**Weighted Fair Queuing (WFQ)** is a more advanced scheduling algorithm that attempts to balance fairness with different levels of priority. Each input-output queue is assigned a weight, and the scheduler transmits packets in proportion to the weights, ensuring that higher-priority or higher-weight queues get more bandwidth.
+
+#### Key Features:
+- **Deficit Counters**: Each queue has a deficit counter, which determines how much data can be sent from that queue in a round. The counter is incremented by the queue’s weight and decremented by the size of the transmitted packet.
+- **Weighted Scheduling**: Higher-weighted queues are allowed to send more data, ensuring a balance between fairness and priority.
+
+This simulation uses the WFQ algorithm to demonstrate how different traffic flows are handled based on their assigned weights.
+
+---
+
+## How the Programs Work
+
+### Traffic Generation
+Each program generates packets at the input ports based on the chosen traffic pattern:
+- **Uniform Traffic**: Packets arrive uniformly across all input ports.
+- **Non-Uniform Traffic**: Packets arrive at different rates at different input ports.
+- **Bursty Traffic**: Some ports experience bursty traffic, while others may have little to no traffic at a given time.
+
+### Packet Processing
+Once packets are generated, the router processes them using the scheduling algorithm in each program. The simulation continues for a specified number of time units (e.g., 1000 time units), after which the program outputs statistics such as:
+- **Total Packets Processed**
+- **Packet Drop Rate**
+- **Average Turnaround Time**
+- **Average Waiting Time**
+- **Queue Throughput per Port**
+
+---
+
+## Compilation and Execution
+
+### Using the Makefile
+
+To compile all the scheduling algorithms, run the following command in the terminal (or command prompt for Windows):
+
+```bash
+mingw32-make

@@ -9,7 +9,7 @@ using namespace std;
 const int NUM_PORTS = 8;
 const int BUFFER_SIZE = 64;
 const int SIMULATION_TIME = 1000;  // Number of time units to run the simulation
-const int PACKET_ARRIVAL_RATE = 4; // Packets arriving per unit time (uniform traffic)
+const int PACKET_ARRIVAL_RATE = 2; // Packets arriving per unit time (uniform traffic)
 
 // Define a structure for a Packet
 struct Packet {
